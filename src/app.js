@@ -48,7 +48,7 @@ app.use('/api/v1/providers', require('./routes/provider.routes'));
 app.use('/api/v1/clinics', require('./routes/clinic.routes'));
 app.use('/api/v1/slots', require('./routes/slot.routes'));
 app.use('/api/v1/bookings', require('./routes/booking.routes'));
-// app.use('/api/v1/admin', require('./routes/admin.routes'));
+app.use('/api/v1/admin', require('./routes/admin.routes'));
 
 // 404 handler
 app.use((req, res, next) => {

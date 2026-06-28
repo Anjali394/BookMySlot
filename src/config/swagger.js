@@ -63,6 +63,7 @@ const swaggerSpec = {
     { name: 'Clinics', description: 'Clinic & availability management' },
     { name: 'Slots', description: 'Slot generation & listing' },
     { name: 'Bookings', description: 'Booking workflow — create, confirm, cancel' },
+    { name: 'Admin', description: 'Admin — manage users, providers, bookings, system stats' },
   ],
   paths: {
     '/health': {
@@ -507,6 +508,84 @@ const swaggerSpec = {
           },
         },
         responses: { 200: { description: 'Booking status updated' }, 400: { description: 'Already processed' } },
+      },
+    },
+    // ── ADMIN ──────────────────────────────────────────────────────────────
+    '/api/v1/admin/stats': {
+      get: {
+        tags: ['Admin'],
+        summary: 'Get system stats (ADMIN only)',
+        security: [{ bearerAuth: [] }],
+        responses: { 200: { description: 'Total users, bookings, providers, clinics, slots' } },
+      },
+    },
+    '/api/v1/admin/users': {
+      get: {
+        tags: ['Admin'],
+        summary: 'List all users (ADMIN only)',
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          { name: 'search', in: 'query', schema: { type: 'string' } },
+          { name: 'role', in: 'query', schema: { type: 'string', enum: ['CUSTOMER', 'PROVIDER', 'ADMIN'] } },
+          { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
+          { name: 'limit', in: 'query', schema: { type: 'integer', default: 10 } },
+        ],
+        responses: { 200: { description: 'Paginated user list' } },
+      },
+    },
+    '/api/v1/admin/users/{id}': {
+      get: {
+        tags: ['Admin'],
+        summary: 'Get user by ID (ADMIN only)',
+        security: [{ bearerAuth: [] }],
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        responses: { 200: { description: 'User details with booking count' }, 404: { description: 'Not found' } },
+      },
+    },
+    '/api/v1/admin/users/{id}/suspend': {
+      patch: {
+        tags: ['Admin'],
+        summary: 'Suspend or activate a user (ADMIN only)',
+        security: [{ bearerAuth: [] }],
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['isActive'],
+                properties: { isActive: { type: 'boolean', example: false } },
+              },
+            },
+          },
+        },
+        responses: { 200: { description: 'User suspended or activated' } },
+      },
+    },
+    '/api/v1/admin/providers': {
+      get: {
+        tags: ['Admin'],
+        summary: 'List all providers (ADMIN only)',
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
+          { name: 'limit', in: 'query', schema: { type: 'integer', default: 10 } },
+        ],
+        responses: { 200: { description: 'Paginated provider list' } },
+      },
+    },
+    '/api/v1/admin/bookings': {
+      get: {
+        tags: ['Admin'],
+        summary: 'List all bookings (ADMIN only)',
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          { name: 'status', in: 'query', schema: { type: 'string', enum: ['PENDING_CONFIRMATION', 'CONFIRMED', 'REJECTED', 'CANCELLED'] } },
+          { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
+          { name: 'limit', in: 'query', schema: { type: 'integer', default: 10 } },
+        ],
+        responses: { 200: { description: 'Paginated booking list' } },
       },
     },
   },
