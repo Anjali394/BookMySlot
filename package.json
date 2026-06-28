@@ -1,0 +1,39 @@
+{
+  "name": "bookmyslot",
+  "version": "1.0.0",
+  "description": "> A production-style REST API for appointment and slot booking built with **Node.js, Express.js, PostgreSQL, and Prisma**.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --testPathPattern=tests --forceExit --detectOpenHandles",
+    "test:watch": "jest --watch",
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:studio": "npx prisma studio"
+  },
+  "keywords": [],
+  "author": "Anjali Singh",
+  "license": "MIT",
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
+    "express-validator": "^7.3.2",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.22.0",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "nodemon": "^3.1.14",
+    "prisma": "^7.8.0",
+    "supertest": "^7.2.2"
+  }
+}

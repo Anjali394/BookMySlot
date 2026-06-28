@@ -1,0 +1,173 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  CUSTOMER
+  PROVIDER
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING_CONFIRMATION
+  CONFIRMED
+  REJECTED
+  CANCELLED
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(CUSTOMER)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  provider      Provider?
+  bookings      Booking[]
+  refreshTokens RefreshToken[]
+
+  @@map("users")
+}
+
+model Provider {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  bio       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  business  Business?
+  clinics   Clinic[]
+
+  @@map("providers")
+}
+
+model Business {
+  id         String   @id @default(uuid())
+  providerId String   @unique
+  name       String
+  category   String
+  phone      String?
+  address    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@map("businesses")
+}
+
+model Clinic {
+  id         String   @id @default(uuid())
+  providerId String
+  name       String
+  address    String
+  phone      String?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  provider      Provider            @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  availability  ProviderAvailability[]
+  slots         Slot[]
+
+  @@map("clinics")
+}
+
+model ProviderAvailability {
+  id           String    @id @default(uuid())
+  clinicId     String
+  dayOfWeek    DayOfWeek
+  startTime    String    // e.g. "09:00"
+  endTime      String    // e.g. "17:00"
+  slotDuration Int       // minutes per slot
+  capacity     Int       @default(1)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  clinic Clinic @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  @@unique([clinicId, dayOfWeek])
+  @@map("provider_availability")
+}
+
+model Slot {
+  id            String   @id @default(uuid())
+  clinicId      String
+  date          DateTime @db.Date
+  startTime     String   // e.g. "10:00"
+  endTime       String   // e.g. "11:00"
+  totalCapacity Int
+  isBlocked     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  clinic   Clinic    @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+
+  @@unique([clinicId, date, startTime])
+  @@map("slots")
+}
+
+model Booking {
+  id        String        @id @default(uuid())
+  slotId    String
+  userId    String
+  status    BookingStatus @default(PENDING_CONFIRMATION)
+  notes     String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  slot          Slot                   @relation(fields: [slotId], references: [id])
+  user          User                   @relation(fields: [userId], references: [id])
+  statusHistory BookingStatusHistory[]
+
+  @@map("bookings")
+}
+
+model BookingStatusHistory {
+  id        String        @id @default(uuid())
+  bookingId String
+  status    BookingStatus
+  changedAt DateTime      @default(now())
+  reason    String?
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("booking_status_history")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
