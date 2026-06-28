@@ -1,13 +1,20 @@
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
 const { globalLimiter } = require('./middleware/rateLimiter');
 const errorHandler = require('./middleware/errorHandler');
 const ApiError = require('./utils/ApiError');
+const swaggerSpec = require('./config/swagger');
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(globalLimiter);
+
+// Swagger docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customSiteTitle: 'BookMySlot API Docs',
+}));
 
 // Health check
 app.get('/health', (req, res) => {
