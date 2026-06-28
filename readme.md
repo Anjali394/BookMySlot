@@ -11,6 +11,16 @@
 
 ---
 
+## Live Links
+
+| | URL |
+|---|---|
+| **API** | https://book-my-slot-peach.vercel.app |
+| **Swagger Docs** | https://book-my-slot-peach.vercel.app/api-docs |
+| **Health Check** | https://book-my-slot-peach.vercel.app/health |
+
+---
+
 # Overview
 
 BookMySlot is a backend appointment booking platform that allows businesses to manage appointments while enabling customers to book available time slots.
