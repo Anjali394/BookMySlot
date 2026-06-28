@@ -7,7 +7,7 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 async function seed() {
-  const email = 'admin@bookmyslot.com';
+  const email = 'anjalirajput394@gmail.com';
   const existing = await prisma.user.findUnique({ where: { email } });
 
   if (existing) {
@@ -18,7 +18,7 @@ async function seed() {
 
   const passwordHash = await bcrypt.hash('Admin@1234', 12);
   const admin = await prisma.user.create({
-    data: { name: 'Super Admin', email, passwordHash, role: 'ADMIN' },
+    data: { name: 'Admin Anjali', email, passwordHash, role: 'ADMIN' },
   });
 
   console.log('Admin user created:', admin.email);
