@@ -83,7 +83,7 @@ const refresh = async (token) => {
   const { accessToken, refreshToken: newRefreshToken } = generateTokens(stored.user);
 
   const expiresAt = new Date();
-  expiresAt.setDate(expiresAt.getDate() + 7);
+  expiresAt.setDate(expiresAt.getDate() + 1); // 1 day
   await repo.saveRefreshToken({
     userId: stored.user.id,
     token: newRefreshToken,

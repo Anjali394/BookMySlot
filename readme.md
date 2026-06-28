@@ -152,14 +152,15 @@ PostgreSQL (Neon)
 
 ```
 bookmyslot/
-
-├── backend/
+│
+├── prisma/
+│   ├── migrations/
+│   └── schema.prisma
 │
 ├── src/
 │   ├── config/
 │   ├── controllers/
 │   ├── middleware/
-│   ├── prisma/
 │   ├── repositories/
 │   ├── routes/
 │   ├── services/
@@ -169,8 +170,6 @@ bookmyslot/
 │   └── server.js
 │
 ├── tests/
-│
-├── docs/
 │
 └── README.md
 ```
@@ -325,9 +324,9 @@ http://localhost:3000/api-docs
 ## Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/bookmyslot.git
+git clone https://github.com/Anjali394/BookMySlot.git
 
-cd bookmyslot
+cd BookMySlot
 ```
 
 ---
@@ -342,18 +341,20 @@ npm install
 
 ## Configure Environment Variables
 
-Create a `.env` file.
-
-Example:
+Create a `.env` file based on `.env.example`:
 
 ```env
 PORT=3000
 
-DATABASE_URL=your_neon_database_url
+DATABASE_URL=postgresql://user:password@host/dbname?sslmode=require
 
-JWT_SECRET=your_jwt_secret
-
+JWT_SECRET=your_super_secret_key_here
 JWT_EXPIRES_IN=1d
+
+JWT_REFRESH_SECRET=your_refresh_secret_here
+JWT_REFRESH_EXPIRES_IN=7d
+
+NODE_ENV=development
 ```
 
 ---
@@ -371,6 +372,16 @@ npx prisma generate
 ```bash
 npx prisma migrate dev
 ```
+
+---
+
+## Seed Admin User
+
+```bash
+npm run seed
+```
+
+This creates the default admin account needed to access `/api/v1/admin` routes.
 
 ---
 
@@ -434,11 +445,8 @@ The following features are intentionally out of scope for Version 1.
 
 This repository contains:
 
-* Software Requirement Specification (SRS)
-* ER Diagram
-* Swagger Documentation
-* Postman Collection
-* API Documentation
+* [Software Requirement Specification (SRS)](docs/SRS.md)
+* Swagger Documentation (live at `/api-docs`)
 * README
 
 ---
@@ -470,7 +478,7 @@ Under active development.
 
 # Author
 
-**Anjali Singh**
+**Anjali Rajput**
 
 Backend Developer
 

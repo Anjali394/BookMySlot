@@ -15,7 +15,7 @@
     "seed": "node src/config/seed.js"
   },
   "keywords": [],
-  "author": "Anjali Singh",
+  "author": "Anjali Rajput",
   "license": "MIT",
   "jest": {
     "testEnvironment": "node",
